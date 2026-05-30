@@ -37,7 +37,9 @@ class PricingManager
             return $this;
         }
 
-        $this->currency = Currency::where('code', $currency)->first();
+        $class = config('priceable.models.currency', Currency::class);
+
+        $this->currency = $class::where('code', $currency)->first();
 
         return $this;
     }
@@ -52,10 +54,10 @@ class PricingManager
     public function get(): PricingResponse
     {
         if (! $this->currency) {
-            $this->currency = Currency::where('is_default', true)->first();
+            $this->currency = $this->resolveDefaultCurrency();
         }
 
-        $responseClass = config('priceable.pricing_response', PricingResponse::class);
+        $responseClass = config('priceable.pricing.response', PricingResponse::class);
 
         if (! $this->model || ! $this->currency) {
             return new $responseClass(priceBreaks: new Collection);
@@ -91,5 +93,15 @@ class PricingManager
             base: $basePrice,
             priceBreaks: $priceBreaks,
         );
+    }
+
+    protected function resolveDefaultCurrency(): ?Currency
+    {
+        $class = config('priceable.models.currency', Currency::class);
+
+        /** @var Currency|null $currency */
+        $currency = $class::where('is_default', true)->first();
+
+        return $currency;
     }
 }

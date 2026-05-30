@@ -22,9 +22,14 @@ class Price extends Model
         'currency_id', 'price', 'compare_price', 'min_quantity',
     ];
 
+    public function getTable(): string
+    {
+        return config('priceable.tables.prices', parent::getTable());
+    }
+
     protected function casts(): array
     {
-        $money = config('priceable.money_cast', MoneyCast::class);
+        $money = MoneyCast::class;
 
         return [
             'price' => $money.':currency',
@@ -40,7 +45,9 @@ class Price extends Model
 
     public function currency(): BelongsTo
     {
-        return $this->belongsTo(Currency::class);
+        $class = config('priceable.models.currency', Currency::class);
+
+        return $this->belongsTo($class);
     }
 
     protected static function newFactory(): PriceFactory

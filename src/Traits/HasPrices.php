@@ -11,7 +11,10 @@ trait HasPrices
 {
     public function prices(): MorphMany
     {
-        return $this->morphMany(Price::class, 'priceable');
+        $class = config('priceable.models.price', Price::class);
+        $morph = config('priceable.morph_name', 'priceable');
+
+        return $this->morphMany($class, $morph);
     }
 
     public function basePrices(): MorphMany
