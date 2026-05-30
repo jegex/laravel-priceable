@@ -57,3 +57,14 @@ it('uses fixed currency code when specified', function () {
     expect($result)->toBeInstanceOf(MoneyValue::class);
     expect($result->currency->code)->toBe('USD');
 });
+
+it('resolves default currency when source is null and default exists', function () {
+    $cast = new MoneyCast();
+    $model = new stdClass;
+
+    $result = $cast->get($model, 'price', 500, []);
+
+    expect($result)->toBeInstanceOf(MoneyValue::class);
+    expect($result->cents)->toBe(500);
+    expect($result->currency->code)->toBe('USD');
+});
