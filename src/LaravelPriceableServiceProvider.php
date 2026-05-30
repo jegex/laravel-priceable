@@ -3,6 +3,7 @@
 namespace Jegex\LaravelPriceable;
 
 use Jegex\LaravelPriceable\Commands\LaravelPriceableCommand;
+use Jegex\LaravelPriceable\Commands\SeedCurrenciesCommand;
 use Jegex\LaravelPriceable\Managers\PricingManager;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -15,7 +16,10 @@ class LaravelPriceableServiceProvider extends PackageServiceProvider
             ->name('laravel-priceable')
             ->hasConfigFile()
             ->hasMigration('create_priceable_table')
-            ->hasCommand(LaravelPriceableCommand::class);
+            ->hasCommands([
+                LaravelPriceableCommand::class,
+                SeedCurrenciesCommand::class,
+            ]);
     }
 
     public function packageRegistered(): void
