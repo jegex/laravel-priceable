@@ -4,6 +4,7 @@ namespace Jegex\LaravelPriceable;
 
 use Jegex\LaravelPriceable\Commands\LaravelPriceableCommand;
 use Jegex\LaravelPriceable\Commands\SeedCurrenciesCommand;
+use Jegex\LaravelPriceable\Commands\UpdateExchangeRatesCommand;
 use Jegex\LaravelPriceable\Contracts\CurrencyExchangeInterface;
 use Jegex\LaravelPriceable\Contracts\PricingManagerInterface;
 use Jegex\LaravelPriceable\Managers\PricingManager;
@@ -22,6 +23,7 @@ class LaravelPriceableServiceProvider extends PackageServiceProvider
             ->hasCommands([
                 LaravelPriceableCommand::class,
                 SeedCurrenciesCommand::class,
+                UpdateExchangeRatesCommand::class,
             ]);
     }
 

@@ -19,7 +19,8 @@ Multi-currency price management package for Laravel — fiat & crypto, quantity 
 | Command | Description |
 |---------|-------------|
 | `php artisan laravel-priceable` | Display package info and currency summary |
-| `php artisan priceable:seed-currencies` | Seed default currencies from `config/priceable.currencies` (`--force` to skip confirmation) |
+ | `php artisan priceable:seed-currencies` | Seed default currencies from `config/priceable.currencies` (`--force` to skip confirmation) |
+| `php artisan priceable:update-exchange-rates` | Update exchange rates from free API (`--dry-run` to preview) |
 
 ## Testing
 
@@ -55,7 +56,8 @@ src/
 ├── Pricing/
 │   └── DefaultPriceFormatter.php     # PriceFormatterInterface impl: decimal(), formatted()
 ├── Services/
-│   └── CurrencyExchange.php          # implements CurrencyExchangeInterface
+│   ├── CurrencyExchange.php          # implements CurrencyExchangeInterface
+│   └── ExchangeRateService.php       # fetchRates(string $base): array — primary + fallback HTTP
 ├── Traits/
 │   └── HasPrices.php                 # prices(), basePrices(), priceBreaks(), pricing(), priceIn(), convertTo(), formattedPrice()
 ├── ValueObjects/

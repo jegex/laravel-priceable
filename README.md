@@ -43,6 +43,13 @@ Seed the default currencies (USD, EUR, GBP, IDR, BTC, ETH):
 php artisan priceable:seed-currencies
 ```
 
+Update exchange rates from the free API:
+
+```bash
+php artisan priceable:update-exchange-rates
+php artisan priceable:update-exchange-rates --dry-run  # preview only
+```
+
 ## Quick Start
 
 ```php
