@@ -15,4 +15,9 @@ class Product extends Model implements Purchasable
     protected $guarded = [];
 
     public $timestamps = false;
+
+    public function getUnitQuantity(): int
+    {
+        return 1;
+    }
 }
