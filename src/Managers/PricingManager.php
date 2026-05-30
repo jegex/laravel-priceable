@@ -55,8 +55,10 @@ class PricingManager
             $this->currency = Currency::where('is_default', true)->first();
         }
 
+        $responseClass = config('priceable.pricing_response', PricingResponse::class);
+
         if (! $this->model || ! $this->currency) {
-            return new PricingResponse(priceBreaks: new Collection);
+            return new $responseClass(priceBreaks: new Collection);
         }
 
         /** @var Collection<int, Price> $prices */
@@ -66,7 +68,7 @@ class PricingManager
             ->get();
 
         if ($prices->isEmpty()) {
-            return new PricingResponse(priceBreaks: new Collection);
+            return new $responseClass(priceBreaks: new Collection);
         }
 
         $basePrice = $prices->first(fn (Price $price) => $price->min_quantity === 1);
@@ -84,7 +86,7 @@ class PricingManager
             $matched = $applicableBreak;
         }
 
-        return new PricingResponse(
+        return new $responseClass(
             matched: $matched,
             base: $basePrice,
             priceBreaks: $priceBreaks,
