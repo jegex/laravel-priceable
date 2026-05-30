@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Jegex\LaravelPriceable\Database\Factories\CurrencyFactory;
 use Jegex\LaravelPriceable\Contracts\CurrencyExchangeInterface;
+use Jegex\LaravelPriceable\Database\Factories\CurrencyFactory;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
