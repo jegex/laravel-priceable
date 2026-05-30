@@ -19,7 +19,7 @@ Multi-currency price management package for Laravel — fiat & crypto, quantity 
 | Command | Description |
 |---------|-------------|
 | `php artisan laravel-priceable` | Display package info and currency summary |
-| `php artisan priceable:seed-currencies` | Seed default currencies from `config/priceable.currencies` |
+| `php artisan priceable:seed-currencies` | Seed default currencies from `config/priceable.currencies` (`--force` to skip confirmation) |
 
 ## Testing
 
@@ -36,10 +36,11 @@ src/
 ├── Casts/
 │   └── MoneyCast.php                 # Generic Eloquent cast: int cents ↔ MoneyValue
 ├── Commands/
-│   ├── LaravelPriceableCommand.php   # php artisan laravel-priceable (info/status)
+│   ├── LaravelPriceableCommand.php   # php artisan laravel-priceable (info/status/config summary)
 │   └── SeedCurrenciesCommand.php     # php artisan priceable:seed-currencies
 ├── Contracts/
-│   └── Priceable.php               # Interface: prices(): MorphMany
+│   ├── Priceable.php               # Interface: prices(), getUnitQuantity()
+│   └── PriceFormatterInterface.php  # decimal(), unitDecimal(), formatted(), unitFormatted()
 ├── DataTransferObjects/
 │   └── PricingResponse.php           # DTO: matched, base, priceBreaks
 ├── Facades/
@@ -67,10 +68,10 @@ src/
 
 ## Models
 
-- **Currency**: exchange_rate decimal(20,10) relative to default currency. `type` enum(fiat, crypto). Seeded from `config/priceable.php`. Includes `LogsActivity` for change tracking.
+- **Currency**: exchange_rate decimal(20,10) relative to default currency. `type` enum(fiat, crypto). Seeded from `config/priceable.php`. Includes `LogsActivity` for change tracking. Observer via `booted()`: setting `is_default` forces `is_active = true`; saving a default currency clears default from all others.
 - **Price**: Polymorphic morphs (`priceable_id`, `priceable_type`). Prices stored as **integer cents** (bigint). Cast `price` and `compare_price` via `MoneyCast::class.':currency'`. `min_quantity` for tiered pricing.
-- **HasPrices** trait: `prices()` (MorphMany), `basePrices()` (min_qty=1), `priceBreaks()` (min_qty>1), `pricing()` (PricingManager fluent API).
-- **Priceable** contract: models using `HasPrices` should implement `Priceable` interface.
+- **HasPrices** trait: `prices()` (MorphMany), `basePrices()` (min_qty=1), `priceBreaks()` (min_qty>1), `pricing()` (PricingManager fluent API), `priceIn()` (base price for currency), `convertTo()` (matched price converted), `formattedPrice()` (formatted string).
+- **Priceable** contract: models using `HasPrices` should implement `Priceable` interface (`prices()`, `getUnitQuantity()`).
 
 ## PricingManager
 
