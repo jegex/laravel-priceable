@@ -25,5 +25,5 @@ return [
         'formatter' => DefaultPriceFormatter::class,
     ],
 
-    'log_activity_name' => 'jegex'
+    'log_activity_name' => 'jegex',
 ];

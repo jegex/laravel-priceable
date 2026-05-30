@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Jegex\LaravelPriceable\Database\Factories\CurrencyFactory;
-use Illuminate\Support\Arr;
+use Jegex\LaravelPriceable\Services\CurrencyExchange;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -61,7 +61,7 @@ class Currency extends Model
 
     public function convertTo(self $target, int|float $amount): int|float
     {
-        return app(\Jegex\LaravelPriceable\Services\CurrencyExchange::class)->convert($this, $target, $amount);
+        return app(CurrencyExchange::class)->convert($this, $target, $amount);
     }
 
     protected static function newFactory(): CurrencyFactory
