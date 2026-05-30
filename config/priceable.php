@@ -1,9 +1,12 @@
 <?php
 
+use Jegex\LaravelPriceable\DataTransferObjects\PricingResponse;
+use Jegex\LaravelPriceable\Managers\PricingManager;
+
 return [
     'default_currency' => 'USD',
 
-    'pricing_manager' => \Jegex\LaravelPriceable\Managers\PricingManager::class,
+    'pricing_manager' => PricingManager::class,
 
-    'pricing_response' => \Jegex\LaravelPriceable\DataTransferObjects\PricingResponse::class,
+    'pricing_response' => PricingResponse::class,
 ];
