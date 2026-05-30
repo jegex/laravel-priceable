@@ -85,13 +85,18 @@ class DefaultPriceFormatter implements PriceFormatterInterface
                 throw new \RuntimeException('NumberFormatter::format failed');
             }
 
-            if ($trimTrailingZeros && $this->currency->decimal_place > 0) {
-                $decimalSeparator = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
-                $result = preg_replace(
-                    '/\\'.preg_quote($decimalSeparator, '/').'\d{'.$dp.'}\d*?0+(\s*\D*)$/',
-                    '$1',
-                    $result,
-                );
+            if ($trimTrailingZeros && $dp > $this->currency->decimal_place) {
+                $dec = $formatter->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+                $parts = explode($dec, $result);
+                if (count($parts) === 2) {
+                    $fractional = $parts[1];
+                    $keep = substr($fractional, 0, $this->currency->decimal_place);
+                    $extra = rtrim(substr($fractional, $this->currency->decimal_place), '0');
+                    $combined = $keep.$extra;
+                    $result = $combined !== ''
+                        ? $parts[0].$dec.$combined
+                        : $parts[0];
+                }
             }
 
             return $result;

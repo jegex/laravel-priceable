@@ -3,11 +3,11 @@
 namespace Jegex\LaravelPriceable\Traits;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Jegex\LaravelPriceable\Contracts\CurrencyExchangeInterface;
+use Jegex\LaravelPriceable\Contracts\PricingManagerInterface;
 use Jegex\LaravelPriceable\Facades\Pricing;
-use Jegex\LaravelPriceable\Managers\PricingManager;
 use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\Models\Price;
-use Jegex\LaravelPriceable\Services\CurrencyExchange;
 use Jegex\LaravelPriceable\ValueObjects\MoneyValue;
 
 trait HasPrices
@@ -30,16 +30,14 @@ trait HasPrices
         return $this->prices()->where('min_quantity', '>', 1);
     }
 
-    public function pricing(): PricingManager
+    public function pricing(): PricingManagerInterface
     {
         return Pricing::for($this);
     }
 
     public function priceIn(Currency|string $currency): ?Price
     {
-        if (is_string($currency)) {
-            $currency = Currency::where('code', $currency)->first();
-        }
+        $currency = $this->resolveCurrency($currency);
 
         if (! $currency) {
             return null;
@@ -59,23 +57,21 @@ trait HasPrices
             return null;
         }
 
-        if (is_string($target)) {
-            $target = Currency::where('code', $target)->first();
-        }
+        $targetCurrency = $this->resolveCurrency($target);
 
-        if (! $target || $matched->currency->is($target)) {
+        if (! $targetCurrency || $matched->currency->is($targetCurrency)) {
             return $matched->price;
         }
 
-        $converted = app(CurrencyExchange::class)->convert(
+        $converted = app(CurrencyExchangeInterface::class)->convert(
             $matched->currency,
-            $target,
+            $targetCurrency,
             $matched->price->cents,
         );
 
         return new MoneyValue(
             cents: (int) round($converted),
-            currency: $target,
+            currency: $targetCurrency,
             unitQty: $qty,
         );
     }
@@ -91,5 +87,16 @@ trait HasPrices
         }
 
         return $price->price->formatted(locale: $locale);
+    }
+
+    private function resolveCurrency(Currency|string|null $currency): ?Currency
+    {
+        if ($currency instanceof Currency) {
+            return $currency;
+        }
+
+        $class = config('priceable.models.currency', Currency::class);
+
+        return $class::where('code', $currency)->first();
     }
 }

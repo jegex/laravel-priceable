@@ -104,7 +104,7 @@ it('seeds currencies from config and uses them', function () {
     $response = Pricing::for($product)->currency('JPY')->get();
 
     expect($response->matched->price->cents)->toBe(15000);
-    expect($response->matched->price->amount())->toBe(15000.0);
+    expect($response->matched->price->decimal())->toBe(15000.0);
 });
 
 it('returns empty pricing response for model without prices', function () {

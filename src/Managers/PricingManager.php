@@ -4,11 +4,12 @@ namespace Jegex\LaravelPriceable\Managers;
 
 use Illuminate\Support\Collection;
 use Jegex\LaravelPriceable\Contracts\Priceable;
+use Jegex\LaravelPriceable\Contracts\PricingManagerInterface;
 use Jegex\LaravelPriceable\DataTransferObjects\PricingResponse;
 use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\Models\Price;
 
-class PricingManager
+class PricingManager implements PricingManagerInterface
 {
     protected ?Priceable $model = null;
 

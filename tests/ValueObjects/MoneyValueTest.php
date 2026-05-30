@@ -26,12 +26,6 @@ it('calculates decimal', function () {
     expect($money->decimal())->toBe(10.0);
 });
 
-it('calculates amount from decimal', function () {
-    $money = new MoneyValue(cents: 1000, currency: $this->currency, unitQty: 3);
-
-    expect($money->amount())->toBe(30.0);
-});
-
 it('calculates unit decimal', function () {
     $money = new MoneyValue(cents: 1000, currency: $this->currency, unitQty: 3);
 
@@ -48,7 +42,7 @@ it('handles zero decimal currencies', function () {
     $currency = new Currency(['code' => 'IDR', 'symbol' => 'Rp', 'decimal_place' => 0]);
     $money = new MoneyValue(cents: 15000, currency: $currency);
 
-    expect($money->amount())->toBe(15000.0);
+    expect($money->decimal())->toBe(15000.0);
     $formatted = $money->formatted(locale: 'id_ID');
     expect($formatted)->toContain('Rp');
     expect($formatted)->toContain('15.000');
@@ -58,7 +52,7 @@ it('handles crypto decimal places', function () {
     $currency = new Currency(['code' => 'BTC', 'symbol' => '₿', 'decimal_place' => 8, 'type' => 'crypto']);
     $money = new MoneyValue(cents: 100000000, currency: $currency);
 
-    expect($money->amount())->toBe(1.0);
+    expect($money->decimal())->toBe(1.0);
 });
 
 it('formats crypto without thousand separators', function () {

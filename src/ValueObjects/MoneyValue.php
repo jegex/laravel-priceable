@@ -24,11 +24,6 @@ class MoneyValue
         return $this->formatter()->unitDecimal();
     }
 
-    public function amount(): float
-    {
-        return $this->decimal() * $this->unitQty;
-    }
-
     public function formatted(
         ?string $locale = null,
         int $formatterStyle = \NumberFormatter::CURRENCY,
