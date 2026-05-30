@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Jegex\LaravelPriceable\Casts\MoneyCast;
 use Jegex\LaravelPriceable\Database\Factories\PriceFactory;
+use function Jegex\LaravelPriceable\priceable_currency_model;
 
 /**
  * @property int $id
@@ -45,7 +46,7 @@ class Price extends Model
 
     public function currency(): BelongsTo
     {
-        $class = config('priceable.models.currency', Currency::class);
+        $class = priceable_currency_model();
 
         return $this->belongsTo($class);
     }
