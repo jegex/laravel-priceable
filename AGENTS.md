@@ -1,6 +1,6 @@
 # laravel-priceable
 
-Multi-currency price management package for Laravel — Spatie package-tools skeleton, early stage.
+Multi-currency price management package for Laravel — fiat & crypto, quantity breaks, exchange rate conversion.
 
 ## Commands
 
@@ -13,6 +13,13 @@ Multi-currency price management package for Laravel — Spatie package-tools ske
 
 - `post-autoload-dump` automatically runs `prepare` — expect a delay on `composer install`/`update`.
 - CI runs PHPStan via `./vendor/bin/phpstan --error-format=github` and tests via `vendor/bin/pest --ci`.
+
+## Artisan Commands
+
+| Command | Description |
+|---------|-------------|
+| `php artisan laravel-priceable` | Display package info and currency summary |
+| `php artisan priceable:seed-currencies` | Seed default currencies from `config/priceable.currencies` |
 
 ## Testing
 
@@ -27,41 +34,64 @@ Multi-currency price management package for Laravel — Spatie package-tools ske
 ```
 src/
 ├── Casts/
-│   └── MoneyCast.php               # Generic Eloquent cast: int cents ↔ MoneyValue
+│   └── MoneyCast.php                 # Generic Eloquent cast: int cents ↔ MoneyValue
 ├── Commands/
-│   └── LaravelPriceableCommand.php # php artisan laravel-priceable
+│   ├── LaravelPriceableCommand.php   # php artisan laravel-priceable (info/status)
+│   └── SeedCurrenciesCommand.php     # php artisan priceable:seed-currencies
+├── Contracts/
+│   └── Purchasable.php               # Interface: prices(): MorphMany
+├── DataTransferObjects/
+│   └── PricingResponse.php           # DTO: matched, base, priceBreaks
 ├── Facades/
-│   └── LaravelPriceable.php        # Facade → LaravelPriceable class
+│   └── Pricing.php                   # Facade → PricingManager
+├── Managers/
+│   └── PricingManager.php            # Fluent API: for(), currency(), qty(), get()
 ├── Models/
-│   ├── Currency.php                 # code, name, symbol, exchange_rate, decimal_place, type, is_active, is_default
-│   └── Price.php                    # Polymorphic: priceable, currency_id, price, compare_price, min_quantity
+│   ├── Currency.php                  # code, name, symbol, exchange_rate, decimal_place, type, is_active, is_default
+│   └── Price.php                     # Polymorphic: priceable, currency_id, price, compare_price, min_quantity
+├── Pricing/
+│   └── DefaultPriceFormatter.php     # PriceFormatterInterface impl: decimal(), formatted()
+├── Services/
+│   └── CurrencyExchange.php          # convert(Currency $from, Currency $to, int|float $amount)
 ├── Traits/
-│   └── HasPrices.php                # MorphMany prices(), priceIn(), convertTo(), formattedPrice()
+│   └── HasPrices.php                 # MorphMany prices(), basePrices(), priceBreaks(), pricing()
 ├── ValueObjects/
-│   └── MoneyValue.php               # cents, currency, unitQuantity → amount(), formatted()
-├── LaravelPriceable.php             # Root class
+│   └── MoneyValue.php                # cents, currency, unitQty → decimal(), amount(), formatted()
 └── LaravelPriceableServiceProvider.php
 ```
 
 - Service provider uses `Spatie\LaravelPackageTools\PackageServiceProvider` — do NOT manually register things in `boot()`/`register()` unless `configurePackage` cannot express it.
 - PSR-4: `Jegex\LaravelPriceable\` → `src/`, `Jegex\LaravelPriceable\Tests\` → `tests/`.
 - Migration stubs in `database/migrations/*.stub`. Config publishes as `priceable.php`.
+- The root class `LaravelPriceable.php` and its facade were removed in the refactor. The facade `Pricing` proxies directly to `PricingManager`.
 
 ## Models
 
-- **Currency**: exchange_rate decimal(20,10) relative to default currency. `type` enum(fiat, crypto). Seeded from `config/priceable.php`.
-- **Price**: Polymorphic morphs (`priceable_id`, `priceable_type`). Prices stored as **integer cents** (bigint). Cast `price` and `compare_price` via `MoneyCast::class.':currency'`.
-- **HasPrices** trait: attach `prices()` relation, `priceIn(Currency|string)`, `convertTo(?string)`, `formattedPrice(?string)`, `scopeWhereHasPriceIn()`.
+- **Currency**: exchange_rate decimal(20,10) relative to default currency. `type` enum(fiat, crypto). Seeded from `config/priceable.php`. Includes `LogsActivity` for change tracking.
+- **Price**: Polymorphic morphs (`priceable_id`, `priceable_type`). Prices stored as **integer cents** (bigint). Cast `price` and `compare_price` via `MoneyCast::class.':currency'`. `min_quantity` for tiered pricing.
+- **HasPrices** trait: `prices()` (MorphMany), `basePrices()` (min_qty=1), `priceBreaks()` (min_qty>1), `pricing()` (PricingManager fluent API).
+- **Purchasable** contract: models using `HasPrices` should implement `Purchasable` interface.
+
+## PricingManager
+
+- **PricingManager**: fluent static API. `Pricing::for($model)->currency($currency)->qty(5)->get()`.
+- **PricingResponse**: DTO with `$matched` (best price), `$base` (base price), `$priceBreaks` (collection of breaks).
+- **Pricing facade** (`\Jegex\LaravelPriceable\Facades\Pricing`): proxies to `PricingManager`.
 
 ## MoneyCast & MoneyValue
 
 - **MoneyCast**: generic Eloquent `CastsAttributes`. Constructor parameter for currency source (relation name like `currency`, or fixed code like `USD`). `get()` → `?MoneyValue`, `set()` → `?int`. Reusable across models (Price, Order, etc).
-- **MoneyValue**: `int $cents`, `Currency $currency`, `int $unitQuantity = 1`. Methods: `amount()` (float), `formatted()` (string with symbol), `__toString()`.
+- **MoneyValue**: `int $cents`, `Currency $currency`, `int $unitQty = 1`. Methods: `decimal()` (float), `amount()` (decimal * qty), `formatted()` (string with symbol), `unitFormatted()`, `__toString()`.
+
+## CurrencyExchange
+
+- **CurrencyExchange**: `convert(Currency $from, Currency $to, int|float $amount)` — same-currency passthrough, cross-currency via `(amount / from.rate) * to.rate`.
 
 ## Dependencies
 
 - `spatie/laravel-activitylog` — for logging exchange rate and price changes.
 - `spatie/laravel-package-tools` — service provider base.
+- `ext-intl` — locale-aware currency formatting via `NumberFormatter`.
 
 ## Code style
 
