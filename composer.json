@@ -35,6 +35,7 @@
         "phpstan/phpstan-phpunit": "^2.0"
     },
     "autoload": {
+        "files": ["src/helpers.php"],
         "psr-4": {
             "Jegex\\LaravelPriceable\\": "src/",
             "Jegex\\LaravelPriceable\\Database\\Factories\\": "database/factories/"
