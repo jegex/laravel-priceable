@@ -67,7 +67,6 @@
                 "Jegex\\LaravelPriceable\\LaravelPriceableServiceProvider"
             ],
             "aliases": {
-                "LaravelPriceable": "Jegex\\LaravelPriceable\\Facades\\LaravelPriceable"
             }
         }
     },
