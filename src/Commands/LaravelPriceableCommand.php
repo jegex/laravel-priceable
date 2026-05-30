@@ -3,7 +3,7 @@
 namespace Jegex\LaravelPriceable\Commands;
 
 use Illuminate\Console\Command;
-use Jegex\LaravelPriceable\Models\Currency;
+use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class LaravelPriceableCommand extends Command
 {
@@ -19,7 +19,7 @@ class LaravelPriceableCommand extends Command
         );
         $this->line('');
 
-        $currencies = Currency::all();
+        $currencies = priceable_currency_model()::all();
 
         if ($currencies->isEmpty()) {
             $this->warn('No currencies found. Run <comment>php artisan priceable:seed-currencies</comment> to seed default currencies.');

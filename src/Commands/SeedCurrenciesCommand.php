@@ -3,7 +3,7 @@
 namespace Jegex\LaravelPriceable\Commands;
 
 use Illuminate\Console\Command;
-use Jegex\LaravelPriceable\Models\Currency;
+use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class SeedCurrenciesCommand extends Command
 {
@@ -28,8 +28,10 @@ class SeedCurrenciesCommand extends Command
             return self::SUCCESS;
         }
 
-        Currency::query()->truncate();
-        Currency::insert($currencies);
+        $class = priceable_currency_model();
+
+        $class::query()->truncate();
+        $class::insert($currencies);
 
         $count = count($currencies);
         $this->info("Seeded {$count} currencies successfully.");

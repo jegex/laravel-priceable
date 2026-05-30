@@ -3,8 +3,8 @@
 namespace Jegex\LaravelPriceable\Commands;
 
 use Illuminate\Console\Command;
-use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\Services\ExchangeRateService;
+use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class UpdateExchangeRatesCommand extends Command
 {
@@ -15,7 +15,8 @@ class UpdateExchangeRatesCommand extends Command
 
     public function handle(ExchangeRateService $service): int
     {
-        $default = Currency::where('is_default', true)->first();
+        $class = priceable_currency_model();
+        $default = $class::where('is_default', true)->first();
 
         if (! $default) {
             $this->error('No default currency found. Set a default currency first.');
@@ -39,7 +40,7 @@ class UpdateExchangeRatesCommand extends Command
             return self::SUCCESS;
         }
 
-        $currencies = Currency::where('is_default', false)->where('is_active', true)->get();
+        $currencies = $class::where('is_default', false)->where('is_active', true)->get();
 
         if ($currencies->isEmpty()) {
             $this->warn('No active non-default currencies to update.');
