@@ -2,8 +2,8 @@
 
 use Jegex\LaravelPriceable\DataTransferObjects\PricingResponse;
 use Jegex\LaravelPriceable\Facades\Pricing;
+use Jegex\LaravelPriceable\Managers\PricingManager;
 use Jegex\LaravelPriceable\Models\Currency;
-use Jegex\LaravelPriceable\Models\Price;
 use Jegex\LaravelPriceable\Tests\Models\Product;
 
 beforeEach(function () {
@@ -14,7 +14,7 @@ beforeEach(function () {
 it('can be instantiated via facade', function () {
     $manager = Pricing::for($this->product);
 
-    expect($manager)->toBeInstanceOf(\Jegex\LaravelPriceable\Managers\PricingManager::class);
+    expect($manager)->toBeInstanceOf(PricingManager::class);
 });
 
 it('returns pricing response from get', function () {
