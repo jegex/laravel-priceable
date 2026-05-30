@@ -61,11 +61,7 @@ class Currency extends Model
 
     public function convertTo(self $target, int|float $amount): int|float
     {
-        if ($this->is($target)) {
-            return $amount;
-        }
-
-        return ($amount / (float) $this->exchange_rate) * (float) $target->exchange_rate;
+        return app(\Jegex\LaravelPriceable\Services\CurrencyExchange::class)->convert($this, $target, $amount);
     }
 
     protected static function newFactory(): CurrencyFactory
