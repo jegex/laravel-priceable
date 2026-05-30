@@ -3,20 +3,20 @@
 namespace Jegex\LaravelPriceable\Managers;
 
 use Illuminate\Support\Collection;
-use Jegex\LaravelPriceable\Contracts\Purchasable;
+use Jegex\LaravelPriceable\Contracts\Priceable;
 use Jegex\LaravelPriceable\DataTransferObjects\PricingResponse;
 use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\Models\Price;
 
 class PricingManager
 {
-    protected ?Purchasable $model = null;
+    protected ?Priceable $model = null;
 
     protected ?Currency $currency = null;
 
     protected int $qty = 1;
 
-    public function for(?Purchasable $model): static
+    public function for(?Priceable $model): static
     {
         $this->model = $model;
 

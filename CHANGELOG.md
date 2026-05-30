@@ -31,7 +31,7 @@ All notable changes to `laravel-priceable` will be documented in this file.
 - MoneyCast for automatic int↔MoneyValue casting
 - MoneyValue value object with formatting
 - HasPrices trait for polymorphic pricing
-- Purchasable contract
+- Priceable contract
 - Activity logging via spatie/laravel-activitylog
 - Config file with model/table customization
 - Migration stubs for currencies and prices tables

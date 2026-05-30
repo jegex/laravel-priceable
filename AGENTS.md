@@ -39,7 +39,7 @@ src/
 │   ├── LaravelPriceableCommand.php   # php artisan laravel-priceable (info/status)
 │   └── SeedCurrenciesCommand.php     # php artisan priceable:seed-currencies
 ├── Contracts/
-│   └── Purchasable.php               # Interface: prices(): MorphMany
+│   └── Priceable.php               # Interface: prices(): MorphMany
 ├── DataTransferObjects/
 │   └── PricingResponse.php           # DTO: matched, base, priceBreaks
 ├── Facades/
@@ -70,7 +70,7 @@ src/
 - **Currency**: exchange_rate decimal(20,10) relative to default currency. `type` enum(fiat, crypto). Seeded from `config/priceable.php`. Includes `LogsActivity` for change tracking.
 - **Price**: Polymorphic morphs (`priceable_id`, `priceable_type`). Prices stored as **integer cents** (bigint). Cast `price` and `compare_price` via `MoneyCast::class.':currency'`. `min_quantity` for tiered pricing.
 - **HasPrices** trait: `prices()` (MorphMany), `basePrices()` (min_qty=1), `priceBreaks()` (min_qty>1), `pricing()` (PricingManager fluent API).
-- **Purchasable** contract: models using `HasPrices` should implement `Purchasable` interface.
+- **Priceable** contract: models using `HasPrices` should implement `Priceable` interface.
 
 ## PricingManager
 

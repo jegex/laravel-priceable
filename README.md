@@ -61,15 +61,15 @@ echo $pricing->matched->price->formatted(); // "$19.99"
 
 ## Models & Contracts
 
-### Purchasable Interface
+### Priceable Interface
 
-Models using `HasPrices` should implement the `Purchasable` contract for type safety:
+Models using `HasPrices` should implement the `Priceable` contract for type safety:
 
 ```php
-use Jegex\LaravelPriceable\Contracts\Purchasable;
+use Jegex\LaravelPriceable\Contracts\Priceable;
 use Jegex\LaravelPriceable\Traits\HasPrices;
 
-class Product extends Model implements Purchasable
+class Product extends Model implements Priceable
 {
     use HasPrices;
 
