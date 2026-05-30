@@ -24,9 +24,11 @@ class Price extends Model
 
     protected function casts(): array
     {
+        $money = config('priceable.money_cast', MoneyCast::class);
+
         return [
-            'price' => MoneyCast::class.':currency',
-            'compare_price' => MoneyCast::class.':currency',
+            'price' => $money.':currency',
+            'compare_price' => $money.':currency',
             'min_quantity' => 'integer',
         ];
     }
