@@ -2,19 +2,21 @@
 
 namespace Jegex\LaravelPriceable\Managers;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Jegex\LaravelPriceable\Contracts\Purchasable;
 use Jegex\LaravelPriceable\DataTransferObjects\PricingResponse;
 use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\Models\Price;
 
 class PricingManager
 {
-    protected ?Model $model = null;
+    protected ?Purchasable $model = null;
+
     protected ?Currency $currency = null;
+
     protected int $qty = 1;
 
-    public function for(?Model $model): static
+    public function for(?Purchasable $model): static
     {
         $this->model = $model;
 
@@ -54,16 +56,17 @@ class PricingManager
         }
 
         if (! $this->model || ! $this->currency) {
-            return new PricingResponse(priceBreaks: new Collection());
+            return new PricingResponse(priceBreaks: new Collection);
         }
 
+        /** @var Collection<int, Price> $prices */
         $prices = $this->model->prices()
             ->where('currency_id', $this->currency->id)
             ->orderBy('price')
             ->get();
 
         if ($prices->isEmpty()) {
-            return new PricingResponse(priceBreaks: new Collection());
+            return new PricingResponse(priceBreaks: new Collection);
         }
 
         $basePrice = $prices->first(fn (Price $price) => $price->min_quantity === 1);

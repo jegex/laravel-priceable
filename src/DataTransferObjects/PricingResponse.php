@@ -11,6 +11,6 @@ class PricingResponse
     public function __construct(
         public ?Price $matched = null,
         public ?Price $base = null,
-        public Collection $priceBreaks = new Collection(),
+        public Collection $priceBreaks = new Collection,
     ) {}
 }
