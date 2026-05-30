@@ -59,6 +59,23 @@ class Currency extends Model
         $query->where('is_active', true);
     }
 
+    protected static function booted(): void
+    {
+        static::saving(function (Currency $currency) {
+            if ($currency->is_default) {
+                $currency->is_active = true;
+            }
+        });
+
+        static::saved(function (Currency $currency) {
+            if ($currency->is_default) {
+                static::where('id', '!=', $currency->id)
+                    ->where('is_default', true)
+                    ->update(['is_default' => false]);
+            }
+        });
+    }
+
     public function convertTo(self $target, int|float $amount): int|float
     {
         return app(CurrencyExchange::class)->convert($this, $target, $amount);
