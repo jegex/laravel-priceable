@@ -41,10 +41,19 @@ it('convertTo delegates to CurrencyExchange', function () {
 });
 
 it('casts exchange rate and booleans correctly', function () {
-    $currency = Currency::factory()->default()->create();
+    $currency = Currency::create([
+        'code' => 'GBP',
+        'name' => 'British Pound',
+        'symbol' => '£',
+        'exchange_rate' => '1.5000000000',
+        'decimal_place' => 2,
+        'type' => 'fiat',
+        'is_active' => 1,
+        'is_default' => 0,
+    ]);
 
     expect($currency->exchange_rate)->toBeString();
-    expect((float) $currency->exchange_rate)->toEqual(1.0);
+    expect((float) $currency->exchange_rate)->toEqual(1.5);
     expect($currency->is_active)->toBeTrue();
-    expect($currency->is_default)->toBeTrue();
+    expect($currency->is_default)->toBeFalse();
 });
