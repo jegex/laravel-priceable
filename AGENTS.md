@@ -39,8 +39,10 @@ src/
 │   ├── LaravelPriceableCommand.php   # php artisan laravel-priceable (info/status/config summary)
 │   └── SeedCurrenciesCommand.php     # php artisan priceable:seed-currencies
 ├── Contracts/
-│   ├── Priceable.php               # Interface: prices(), getUnitQuantity()
-│   └── PriceFormatterInterface.php  # decimal(), unitDecimal(), formatted(), unitFormatted()
+│   ├── CurrencyExchangeInterface.php # convert(Currency $from, Currency $to, int|float $amount): float
+│   ├── Priceable.php               # Interface: prices(): MorphMany
+│   ├── PriceFormatterInterface.php  # decimal(), unitDecimal(), formatted(), unitFormatted()
+│   └── PricingManagerInterface.php  # for(), currency(), qty(), get()
 ├── DataTransferObjects/
 │   └── PricingResponse.php           # DTO: matched, base, priceBreaks
 ├── Facades/
@@ -53,40 +55,40 @@ src/
 ├── Pricing/
 │   └── DefaultPriceFormatter.php     # PriceFormatterInterface impl: decimal(), formatted()
 ├── Services/
-│   └── CurrencyExchange.php          # convert(Currency $from, Currency $to, int|float $amount)
+│   └── CurrencyExchange.php          # implements CurrencyExchangeInterface
 ├── Traits/
-│   └── HasPrices.php                 # MorphMany prices(), basePrices(), priceBreaks(), pricing()
+│   └── HasPrices.php                 # prices(), basePrices(), priceBreaks(), pricing(), priceIn(), convertTo(), formattedPrice()
 ├── ValueObjects/
-│   └── MoneyValue.php                # cents, currency, unitQty → decimal(), amount(), formatted()
+│   └── MoneyValue.php                # cents, currency, unitQty → decimal(), formatted(), formatter memoized
 └── LaravelPriceableServiceProvider.php
 ```
 
 - Service provider uses `Spatie\LaravelPackageTools\PackageServiceProvider` — do NOT manually register things in `boot()`/`register()` unless `configurePackage` cannot express it.
 - PSR-4: `Jegex\LaravelPriceable\` → `src/`, `Jegex\LaravelPriceable\Tests\` → `tests/`.
 - Migration stubs in `database/migrations/*.stub`. Config publishes as `priceable.php`.
-- The root class `LaravelPriceable.php` and its facade were removed in the refactor. The facade `Pricing` proxies directly to `PricingManager`.
+- The root class `LaravelPriceable.php` and its facade were removed in the refactor. The facade `Pricing` proxies directly to `PricingManagerInterface` binding.
 
 ## Models
 
 - **Currency**: exchange_rate decimal(20,10) relative to default currency. `type` enum(fiat, crypto). Seeded from `config/priceable.php`. Includes `LogsActivity` for change tracking. Observer via `booted()`: setting `is_default` forces `is_active = true`; saving a default currency clears default from all others.
 - **Price**: Polymorphic morphs (`priceable_id`, `priceable_type`). Prices stored as **integer cents** (bigint). Cast `price` and `compare_price` via `MoneyCast::class.':currency'`. `min_quantity` for tiered pricing.
-- **HasPrices** trait: `prices()` (MorphMany), `basePrices()` (min_qty=1), `priceBreaks()` (min_qty>1), `pricing()` (PricingManager fluent API), `priceIn()` (base price for currency), `convertTo()` (matched price converted), `formattedPrice()` (formatted string).
-- **Priceable** contract: models using `HasPrices` should implement `Priceable` interface (`prices()`, `getUnitQuantity()`).
+- **HasPrices** trait: `prices()` (MorphMany), `basePrices()` (min_qty=1), `priceBreaks()` (min_qty>1), `pricing()` (PricingManager fluent API), `priceIn()` (base price for currency, eager loads currency), `convertTo()` (matched price converted), `formattedPrice()` (formatted string, eager loads currency).
+- **Priceable** contract: models using `HasPrices` should implement `Priceable` interface (`prices()`).
 
 ## PricingManager
 
-- **PricingManager**: fluent static API. `Pricing::for($model)->currency($currency)->qty(5)->get()`.
+- **PricingManager**: implements `PricingManagerInterface`. Fluent API via facade: `Pricing::for($model)->currency($currency)->qty(5)->get()`.
 - **PricingResponse**: DTO with `$matched` (best price), `$base` (base price), `$priceBreaks` (collection of breaks).
-- **Pricing facade** (`\Jegex\LaravelPriceable\Facades\Pricing`): proxies to `PricingManager`.
+- **Pricing facade** (`\Jegex\LaravelPriceable\Facades\Pricing`): proxies to `PricingManagerInterface` binding.
 
 ## MoneyCast & MoneyValue
 
 - **MoneyCast**: generic Eloquent `CastsAttributes`. Constructor parameter for currency source (relation name like `currency`, or fixed code like `USD`). `get()` → `?MoneyValue`, `set()` → `?int`. Reusable across models (Price, Order, etc).
-- **MoneyValue**: `int $cents`, `Currency $currency`, `int $unitQty = 1`. Methods: `decimal()` (float), `amount()` (decimal * qty), `formatted()` (string with symbol), `unitFormatted()`, `__toString()`.
+- **MoneyValue**: `int $cents`, `Currency $currency`, `int $unitQty = 1`. Methods: `decimal()` (float), `formatted()` (string with symbol), `unitFormatted()`, `__toString()`. Formatter instance memoized after first call.
 
 ## CurrencyExchange
 
-- **CurrencyExchange**: `convert(Currency $from, Currency $to, int|float $amount)` — same-currency passthrough, cross-currency via `(amount / from.rate) * to.rate`.
+- **CurrencyExchange** (`implements CurrencyExchangeInterface`): `convert(Currency $from, Currency $to, int|float $amount): float` — same-currency passthrough, cross-currency via `(amount / from.rate) * to.rate`.
 
 ## Dependencies
 

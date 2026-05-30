@@ -15,9 +15,4 @@ class Product extends Model implements Priceable
     protected $guarded = [];
 
     public $timestamps = false;
-
-    public function getUnitQuantity(): int
-    {
-        return 1;
-    }
 }

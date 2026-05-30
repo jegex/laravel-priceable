@@ -76,7 +76,7 @@ class Currency extends Model
         });
     }
 
-    public function convertTo(self $target, int|float $amount): int|float
+    public function convertTo(self $target, int|float $amount): float
     {
         return app(CurrencyExchangeInterface::class)->convert($this, $target, $amount);
     }

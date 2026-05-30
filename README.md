@@ -72,11 +72,6 @@ use Jegex\LaravelPriceable\Traits\HasPrices;
 class Product extends Model implements Priceable
 {
     use HasPrices;
-
-    public function getUnitQuantity(): int
-    {
-        return 1;
-    }
 }
 ```
 
@@ -85,7 +80,6 @@ The contract requires two methods:
 | Method | Returns | Description |
 |--------|---------|-------------|
 | `prices()` | `MorphMany` | Polymorphic prices relation — `HasPrices` provides this |
-| `getUnitQuantity()` | `int` | The quantity that constitutes one unit (e.g. 1, or item weight/volume)
 
 ### HasPrices Trait
 

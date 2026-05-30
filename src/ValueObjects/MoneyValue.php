@@ -8,6 +8,8 @@ use Jegex\LaravelPriceable\Pricing\DefaultPriceFormatter;
 
 class MoneyValue
 {
+    private ?PriceFormatterInterface $formatter = null;
+
     public function __construct(
         public readonly int $cents,
         public readonly Currency $currency,
@@ -59,8 +61,12 @@ class MoneyValue
 
     private function formatter(): PriceFormatterInterface
     {
-        $class = config('priceable.pricing.formatter', DefaultPriceFormatter::class);
+        if ($this->formatter === null) {
+            $class = config('priceable.pricing.formatter', DefaultPriceFormatter::class);
 
-        return new $class($this->cents, $this->currency, $this->unitQty);
+            $this->formatter = new $class($this->cents, $this->currency, $this->unitQty);
+        }
+
+        return $this->formatter;
     }
 }

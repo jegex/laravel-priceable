@@ -44,6 +44,7 @@ trait HasPrices
         }
 
         return $this->prices()
+            ->with('currency')
             ->where('currency_id', $currency->id)
             ->where('min_quantity', 1)
             ->first();
@@ -80,7 +81,7 @@ trait HasPrices
     {
         $price = $currency
             ? $this->priceIn($currency)
-            : $this->basePrices()->first();
+            : $this->basePrices()->with('currency')->first();
 
         if (! $price || ! $price->price) {
             return null;
