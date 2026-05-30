@@ -4,6 +4,7 @@ namespace Jegex\LaravelPriceable\Commands;
 
 use Illuminate\Console\Command;
 use Jegex\LaravelPriceable\Services\ExchangeRateService;
+
 use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class UpdateExchangeRatesCommand extends Command

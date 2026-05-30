@@ -3,6 +3,7 @@
 namespace Jegex\LaravelPriceable\Commands;
 
 use Illuminate\Console\Command;
+
 use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class SeedCurrenciesCommand extends Command

@@ -9,6 +9,7 @@ use Jegex\LaravelPriceable\Facades\Pricing;
 use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\Models\Price;
 use Jegex\LaravelPriceable\ValueObjects\MoneyValue;
+
 use function Jegex\LaravelPriceable\priceable_currency_model;
 
 trait HasPrices

@@ -8,6 +8,7 @@ use Jegex\LaravelPriceable\Contracts\PricingManagerInterface;
 use Jegex\LaravelPriceable\DataTransferObjects\PricingResponse;
 use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\Models\Price;
+
 use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class PricingManager implements PricingManagerInterface

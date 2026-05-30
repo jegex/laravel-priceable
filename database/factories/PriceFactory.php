@@ -4,6 +4,7 @@ namespace Jegex\LaravelPriceable\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Jegex\LaravelPriceable\Models\Price;
+
 use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class PriceFactory extends Factory

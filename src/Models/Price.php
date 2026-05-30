@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Jegex\LaravelPriceable\Casts\MoneyCast;
 use Jegex\LaravelPriceable\Database\Factories\PriceFactory;
+
 use function Jegex\LaravelPriceable\priceable_currency_model;
 
 /**

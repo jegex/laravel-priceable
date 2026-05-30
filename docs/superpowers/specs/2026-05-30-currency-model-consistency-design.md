@@ -57,8 +57,8 @@ Autoload via `composer.json`:
 | `Price` | `config('...', Currency::class)` | `priceable_currency_model()` |
 | `MoneyCast` (2 queries) | `Currency::where('code', ...)` | `priceable_currency_model()::where(...)` |
 | `LaravelPriceableCommand` | `Currency::all()` | `priceable_currency_model()::all()` |
-| `SeedCurrenciesCommand` (2 lines) | `Currency::query()->truncate()`, `Currency::insert(...)` | via resolver |
-| `UpdateExchangeRatesCommand` (2 queries) | `Currency::where(is_default: true)` and `where(is_default: false, is_active: true)` | via resolver |
+| `SeedCurrenciesCommand` (2 lines) | `Currency::query()->truncate()`, `Currency::insert(...)` | `$class = priceable_currency_model()` lalu `$class::query()->truncate()`, `$class::insert(...)` |
+| `UpdateExchangeRatesCommand` (2 queries) | `Currency::where(is_default: true)` and `where(is_default: false, is_active: true)` | `$class = priceable_currency_model()` lalu `$class::where(...)` |
 | `PriceFactory` | `Currency::factory()` | `priceable_currency_model()::factory()` |
 | `CurrencyFactory` | `$model = Currency::class` | tetap hardcode (static property — tidak bisa dinamis) |
 

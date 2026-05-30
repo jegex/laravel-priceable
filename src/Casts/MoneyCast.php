@@ -5,6 +5,7 @@ namespace Jegex\LaravelPriceable\Casts;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\ValueObjects\MoneyValue;
+
 use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class MoneyCast implements CastsAttributes
