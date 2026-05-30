@@ -1,24 +1,26 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "jegex/laravel-priceable",
+    "description": "Laravel package for multi-currency price management. Easily support fiat and crypto using the HasPrices trait. Includes dedicated models for currencies and prices to seamlessly handle exchange rates, multi-currency products, and flexible pricing architectures in any application. Lightweight, powerful, and developer-friendly.",
     "keywords": [
-        ":vendor_name",
+        "jegex",
         "laravel",
-        ":package_slug"
+        "laravel-priceable"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/jegex/laravel-priceable",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Razqa Arkana",
+            "email": "hujan008@gmail.com",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.4",
         "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^11.0||^12.0||^13.0"
+        "illuminate/contracts": "^11.0||^12.0||^13.0",
+        "spatie/laravel-activitylog": "^5.0",
+        "ext-intl": "*"
     },
     "require-dev": {
         "laravel/pint": "^1.14",
@@ -30,18 +32,17 @@
         "pestphp/pest-plugin-laravel": "^4.0",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
-        "phpstan/phpstan-phpunit": "^2.0",
-        "spatie/laravel-ray": "^1.35"
+        "phpstan/phpstan-phpunit": "^2.0"
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Jegex\\LaravelPriceable\\": "src/",
+            "Jegex\\LaravelPriceable\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "Jegex\\LaravelPriceable\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -63,10 +64,9 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Jegex\\LaravelPriceable\\LaravelPriceableServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
             }
         }
     },

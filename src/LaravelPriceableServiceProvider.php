@@ -20,8 +20,8 @@ class LaravelPriceableServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->app->singleton(PricingManager::class, function ($app) {
-            $class = $app['config']['priceable.pricing_manager'] ?? PricingManager::class;
+        $this->app->bind(PricingManager::class, function ($app) {
+            $class = $app['config']['priceable.pricing.manager'] ?? PricingManager::class;
 
             return new $class;
         });
