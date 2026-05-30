@@ -5,6 +5,7 @@ namespace Jegex\LaravelPriceable\Casts;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Jegex\LaravelPriceable\Models\Currency;
 use Jegex\LaravelPriceable\ValueObjects\MoneyValue;
+use function Jegex\LaravelPriceable\priceable_currency_model;
 
 class MoneyCast implements CastsAttributes
 {
@@ -45,11 +46,11 @@ class MoneyCast implements CastsAttributes
             return $model->{$this->currencySource};
         }
 
-        return Currency::where('code', $this->currencySource)->firstOrFail();
+        return priceable_currency_model()::where('code', $this->currencySource)->firstOrFail();
     }
 
     protected function resolveDefaultCurrency(): Currency
     {
-        return Currency::where('is_default', true)->firstOrFail();
+        return priceable_currency_model()::where('is_default', true)->firstOrFail();
     }
 }
