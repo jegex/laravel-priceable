@@ -59,7 +59,7 @@ it('uses fixed currency code when specified', function () {
 });
 
 it('resolves default currency when source is null and default exists', function () {
-    $cast = new MoneyCast();
+    $cast = new MoneyCast;
     $model = new stdClass;
 
     $result = $cast->get($model, 'price', 500, []);

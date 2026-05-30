@@ -22,7 +22,7 @@ class SeedCurrenciesCommand extends Command
             return self::SUCCESS;
         }
 
-        if (!$this->option('force') && !$this->confirm('This will truncate the currencies table and re-seed. Continue?')) {
+        if (! $this->option('force') && ! $this->confirm('This will truncate the currencies table and re-seed. Continue?')) {
             $this->info('Seeding cancelled.');
 
             return self::SUCCESS;
