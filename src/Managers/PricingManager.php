@@ -61,8 +61,8 @@ class PricingManager
 
         /** @var Collection<int, Price> $prices */
         $prices = $this->model->prices()
+            ->with('currency')
             ->where('currency_id', $this->currency->id)
-            ->orderBy('price')
             ->get();
 
         if ($prices->isEmpty()) {
