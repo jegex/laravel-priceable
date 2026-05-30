@@ -168,3 +168,29 @@ it('supports chaining via product->pricing()', function () {
 
     expect($response->matched)->not->toBeNull();
 });
+
+it('returns default pricing when currency is reset with null', function () {
+    $this->product->prices()->create([
+        'currency_id' => $this->defaultCurrency->id,
+        'price' => 500,
+    ]);
+
+    $response = $this->product->pricing()->currency(null)->get();
+
+    expect($response->matched)->not->toBeNull();
+    expect($response->matched->price->cents)->toBe(500);
+});
+
+it('returns empty response when no default currency exists', function () {
+    Currency::query()->delete();
+
+    $this->product->prices()->create([
+        'currency_id' => $this->defaultCurrency->id,
+        'price' => 500,
+    ]);
+
+    $response = $this->product->pricing()->get();
+
+    expect($response->matched)->toBeNull();
+    expect($response->base)->toBeNull();
+});
